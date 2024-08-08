@@ -10,7 +10,8 @@
 , freetype
 , just
 , libinput
-, pkg-config
+, pkgconf
+, rustc
 , udev
 , util-linux
 , nix-update-script
@@ -56,7 +57,7 @@ rustPlatform.buildRustPackage {
     };
   };
 
-  nativeBuildInputs = [ libcosmicAppHook' cmake just pkg-config util-linux ];
+  nativeBuildInputs = [ libcosmicAppHook' cmake just pkgconf rustc util-linux ];
   buildInputs = [ expat fontconfig freetype libinput udev ];
 
   dontUseJustBuild = true;

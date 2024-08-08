@@ -3,6 +3,7 @@
 , rustPlatform
 , libcosmicAppHook
 , stdenv
+, rustc
 , glib
 , just
 , nix-update-script
@@ -39,7 +40,7 @@ rustPlatform.buildRustPackage rec {
     };
   };
 
-  nativeBuildInputs = [ libcosmicAppHook just ];
+  nativeBuildInputs = [ libcosmicAppHook just rustc ];
   buildInputs = [ glib ];
 
   dontUseJustBuild = true;

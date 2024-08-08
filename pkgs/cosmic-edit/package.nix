@@ -1,5 +1,6 @@
 {
   lib,
+	rustc,
   fetchFromGitHub,
   rustPlatform,
   libcosmicAppHook,
@@ -9,7 +10,7 @@
   gtk3,
   just,
   libinput,
-  pkg-config,
+  pkgconf,
   stdenv,
   nix-update-script,
 }:
@@ -44,7 +45,7 @@ rustPlatform.buildRustPackage rec {
     };
   };
 
-  nativeBuildInputs = [ libcosmicAppHook just pkg-config ];
+  nativeBuildInputs = [ libcosmicAppHook just pkgconf rustc ];
   buildInputs = [
     glib
     gtk3
