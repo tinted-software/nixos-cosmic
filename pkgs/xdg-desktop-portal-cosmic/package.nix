@@ -4,6 +4,7 @@
 , libcosmicAppHook
 , rustc
 , pkgconf
+, glib
 , mesa
 , pipewire
 , gst_all_1
@@ -47,7 +48,7 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = [ libcosmicAppHook rustPlatform.bindgenHook pkgconf rustc ];
   buildInputs = [ mesa pipewire ];
-  checkInputs = [ gst_all_1.gstreamer ];
+  checkInputs = [ gst_all_1.gstreamer glib ];
 
   env.VERGEN_GIT_SHA = src.rev;
 
