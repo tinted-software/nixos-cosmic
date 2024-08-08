@@ -3,7 +3,8 @@
 , rustPlatform
 , stdenv
 , just
-, pkg-config
+, uutils-coreutils-noprefix
+, pkgconf
 , wayland
 , nix-update-script
 }:
@@ -26,7 +27,7 @@ rustPlatform.buildRustPackage {
     };
   };
 
-  nativeBuildInputs = [ just pkg-config ];
+  nativeBuildInputs = [ just pkgconf uutils-coreutils-noprefix ];
   buildInputs = [ wayland ];
 
   dontUseJustBuild = true;
