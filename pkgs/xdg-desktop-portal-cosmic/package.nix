@@ -2,7 +2,8 @@
 , rustPlatform
 , fetchFromGitHub
 , libcosmicAppHook
-, pkg-config
+, rustc
+, pkgconf
 , mesa
 , pipewire
 , gst_all_1
@@ -44,7 +45,7 @@ rustPlatform.buildRustPackage rec {
 
   separateDebugInfo = true;
 
-  nativeBuildInputs = [ libcosmicAppHook rustPlatform.bindgenHook pkg-config ];
+  nativeBuildInputs = [ libcosmicAppHook rustPlatform.bindgenHook pkgconf rustc ];
   buildInputs = [ mesa pipewire ];
   checkInputs = [ gst_all_1.gstreamer ];
 
