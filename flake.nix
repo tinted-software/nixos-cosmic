@@ -2,32 +2,23 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
-
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     flake-compat = {
       url = "github:nix-community/flake-compat";
       flake = false;
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, rust-overlay, ... }: let
-    forAllSystems = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
-    rustPlatformFor = pkgs: let
-      rust-bin = rust-overlay.lib.mkRustBin {} pkgs;
-    in pkgs.makeRustPlatform {
-      cargo = rust-bin.stable.latest.default;
-      rustc = rust-bin.stable.latest.default;
-    };
+  outputs = { self, nixpkgs, ... }: let
+    forAllSystems = nixpkgs.lib.genAttrs [
+			"x86_64-linux" "aarch64-linux"
+			"x86_64-darwin" "aarch64-darwin"
+			"riscv64-linux" "riscv32-linux"
+			"x86_64-freebsd" "riscv64-freebsd"
+		];
   in {
     lib = {
       packagesFor = pkgs: import ./pkgs {
         inherit pkgs;
-        rustPlatform = rustPlatformFor pkgs;
       };
     };
 
@@ -36,7 +27,6 @@
     overlays = {
       default = final: prev: import ./pkgs {
         inherit final prev;
-        rustPlatform = rustPlatformFor prev;
       };
     };
 
@@ -118,13 +108,10 @@
           ];
         };
       in nixosConfig.config.system.build.vm // { closure = nixosConfig.config.system.build.toplevel; inherit (nixosConfig) config pkgs; }) { inherit nixpkgs; };
-
-      vm-stable = self.legacyPackages.${system}.vm.override { nixpkgs = nixpkgs-stable; };
     });
 
     checks = forAllSystems (system: {
       vm = self.legacyPackages.${system}.vm.closure;
-      vm-stable = self.legacyPackages.${system}.vm-stable.closure;
     });
   };
 }
