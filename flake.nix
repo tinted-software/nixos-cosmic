@@ -1,20 +1,12 @@
 {
 	inputs = {
-		nixpkgs.url = "github:NixOS/nixpkgs/staging-next";
+		nixpkgs.url = "github:tinted-software/nixpkgs/tinted-staging";
 
-		flake-compat = {
-			url = "github:nix-community/flake-compat";
-			flake = false;
-		};
+		systems.url = "github:nix-systems/default";
 	};
 
-	outputs = { self, nixpkgs, ... }: let
-		forAllSystems = nixpkgs.lib.genAttrs [
-			"x86_64-linux" "aarch64-linux"
-			"x86_64-darwin" "aarch64-darwin"
-			"riscv64-linux" "riscv32-linux"
-			"x86_64-freebsd" "riscv64-freebsd"
-		];
+	outputs = { self, systems, nixpkgs, ... }: let
+		eachSystem = nixpkgs.lib.genAttrs (import systems);
 	in {
 		lib = {
 			packagesFor = pkgs: import ./pkgs {
@@ -22,7 +14,7 @@
 			};
 		};
 
-		packages = forAllSystems (system: self.lib.packagesFor nixpkgs.legacyPackages.${system});
+		packages = eachSystem (system: self.lib.packagesFor nixpkgs.legacyPackages.${system});
 
 		overlays = {
 			default = final: prev: import ./pkgs {
@@ -34,7 +26,7 @@
 			default = import ./nixos { cosmicOverlay = self.overlays.default; };
 		};
 
-		legacyPackages = forAllSystems (system: let lib = nixpkgs.lib; pkgs = nixpkgs.legacyPackages.${system}; in {
+		legacyPackages = eachSystem (system: let lib = nixpkgs.lib; pkgs = nixpkgs.legacyPackages.${system}; in {
 			update = pkgs.writeShellApplication {
 				name = "cosmic-unstable-update";
 

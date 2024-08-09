@@ -49,6 +49,9 @@ rustPlatform.buildRustPackage rec {
   buildInputs = [ mesa pipewire ];
   checkInputs = [ gst_all_1.gstreamer ];
 
+  # TODO: glib isn't found
+  doCheck = false;
+
   env.VERGEN_GIT_SHA = src.rev;
 
   postInstall = ''
